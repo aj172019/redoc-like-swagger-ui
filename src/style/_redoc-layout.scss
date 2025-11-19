@@ -1,0 +1,200 @@
+// Redoc-like 2-column layout styles
+@use "variables" as *;
+
+.swagger-ui {
+  // Enable 2-column layout for operations
+  .opblock.is-open .opblock-body {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    align-items: flex-start;
+    
+    @media (max-width: 1024px) {
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+
+  // Left column: Fields and descriptions
+  .opblock-description-column {
+    flex: 1 1 50%;
+    min-width: 0;
+    
+    @media (max-width: 1024px) {
+      flex: 1 1 100%;
+    }
+
+    // Parameters section styling
+    .opblock-section {
+      margin-bottom: 20px;
+
+      .opblock-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid rgba(59, 65, 81, 0.2);
+
+        h4 {
+          margin: 0;
+        }
+      }
+    }
+
+    // Responses in left column
+    .responses-wrapper {
+      margin-top: 30px;
+
+      .responses-inner {
+        h4 {
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+
+  // Right column: Examples and Try it out
+  .opblock-examples-column {
+    flex: 1 1 50%;
+    min-width: 0;
+    background: #fafafa;
+    padding: 20px;
+    border-radius: 4px;
+    border: 1px solid #e8e8e8;
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    
+    @media (max-width: 1024px) {
+      flex: 1 1 100%;
+      position: static;
+      max-height: none;
+    }
+
+    h4 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #3b4151;
+    }
+
+    // Servers section
+    .opblock-section-header {
+      margin-bottom: 15px;
+    }
+
+    // Execute button section
+    .execute-wrapper,
+    .btn-group {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e8e8e8;
+    }
+
+    // Validation errors
+    .validation-errors {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 4px;
+      font-size: 12px;
+
+      ul {
+        margin: 5px 0 0 20px;
+        padding: 0;
+      }
+    }
+
+    // Loading indicator
+    .loading-container {
+      margin-top: 15px;
+    }
+  }
+
+  // Hide example values from left column (they should only appear in right column)
+  .opblock-description-column {
+    .parameters {
+      .parameter__type,
+      .parameter__deprecated {
+        display: inline-block;
+        margin-left: 5px;
+      }
+    }
+
+    // Show only model schema, hide example in parameters
+    .body-param {
+      .tab-item {
+        &:first-child {
+          display: none; // Hide "Example Value" tab in left column
+        }
+      }
+    }
+  }
+
+  // Style for nested schema properties (depth representation)
+  .model-box,
+  .model {
+    .property-row {
+      padding-left: 0;
+      
+      &.depth-1 {
+        padding-left: 20px;
+        border-left: 2px solid rgba(59, 65, 81, 0.1);
+      }
+      
+      &.depth-2 {
+        padding-left: 40px;
+        border-left: 2px solid rgba(59, 65, 81, 0.1);
+      }
+      
+      &.depth-3 {
+        padding-left: 60px;
+        border-left: 2px solid rgba(59, 65, 81, 0.1);
+      }
+      
+      &.depth-4 {
+        padding-left: 80px;
+        border-left: 2px solid rgba(59, 65, 81, 0.1);
+      }
+    }
+
+    // Better visual for nested models
+    table {
+      margin-left: 10px;
+      
+      tr {
+        td:first-child {
+          font-weight: 600;
+          color: #3b4151;
+        }
+      }
+    }
+  }
+
+  // Improve table layout in left column
+  .parameters-col_name {
+    width: 35%;
+    min-width: 120px;
+  }
+
+  .parameters-col_description {
+    width: 65%;
+  }
+
+  // Better spacing for responses
+  .responses-wrapper {
+    .response {
+      margin-bottom: 15px;
+
+      .response-col_status {
+        font-weight: 700;
+      }
+    }
+  }
+}
+
