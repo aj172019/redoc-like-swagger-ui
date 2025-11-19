@@ -124,132 +124,139 @@ export default class Operation extends PureComponent {
               { (operation && operation.size) || operation === null ? null :
                 <RollingLoadSVG height="32px" width="32px" className="opblock-loading-animation" />
               }
-              { deprecated && <h4 className="opblock-title_normal"> Warning: Deprecated</h4>}
-              { description &&
-                <div className="opblock-description-wrapper">
-                  <div className="opblock-description">
-                    <Markdown source={ description } />
+              
+              {/* Left Column: Description and Parameters */}
+              <div className="opblock-description-column">
+                { deprecated && <h4 className="opblock-title_normal"> Warning: Deprecated</h4>}
+                { description &&
+                  <div className="opblock-description-wrapper">
+                    <div className="opblock-description">
+                      <Markdown source={ description } />
+                    </div>
                   </div>
-                </div>
-              }
-              {
-                externalDocsUrl ?
-                <div className="opblock-external-docs-wrapper">
-                  <h4 className="opblock-title_normal">Find more details</h4>
-                  <div className="opblock-external-docs">
-                    {externalDocs.description &&
-                      <span className="opblock-external-docs__description">
-                        <Markdown source={ externalDocs.description } />
-                      </span>
-                    }
-                    <Link target="_blank" className="opblock-external-docs__link" href={sanitizeUrl(externalDocsUrl)}>{externalDocsUrl}</Link>
-                  </div>
-                </div> : null
-              }
-
-              { !operation || !operation.size ? null :
-                <Parameters
-                  parameters={parameters}
-                  specPath={specPath.push("parameters")}
-                  operation={operation}
-                  onChangeKey={onChangeKey}
-                  onTryoutClick = { onTryoutClick }
-                  onResetClick = { onResetClick }
-                  onCancelClick = { onCancelClick }
-                  tryItOutEnabled = { tryItOutEnabled }
-                  allowTryItOut={allowTryItOut}
-
-                  fn={fn}
-                  getComponent={ getComponent }
-                  specActions={ specActions }
-                  specSelectors={ specSelectors }
-                  pathMethod={ [path, method] }
-                  getConfigs={ getConfigs }
-                  oas3Actions={ oas3Actions }
-                  oas3Selectors={ oas3Selectors }
-                />
-              }
-
-              { !tryItOutEnabled ? null :
-                <OperationServers
-                  getComponent={getComponent}
-                  path={path}
-                  method={method}
-                  operationServers={operation.get("servers")}
-                  pathServers={specSelectors.paths().getIn([path, "servers"])}
-                  getSelectedServer={oas3Selectors.selectedServer}
-                  setSelectedServer={oas3Actions.setSelectedServer}
-                  setServerVariableValue={oas3Actions.setServerVariableValue}
-                  getServerVariable={oas3Selectors.serverVariableValue}
-                  getEffectiveServerValue={oas3Selectors.serverEffectiveValue}
-                />
-              }
-
-              {!tryItOutEnabled || !allowTryItOut ? null : schemes && schemes.size ? <div className="opblock-schemes">
-                    <Schemes schemes={ schemes }
-                             path={ path }
-                             method={ method }
-                             specActions={ specActions }
-                             currentScheme={ operationScheme } />
+                }
+                {
+                  externalDocsUrl ?
+                  <div className="opblock-external-docs-wrapper">
+                    <h4 className="opblock-title_normal">Find more details</h4>
+                    <div className="opblock-external-docs">
+                      {externalDocs.description &&
+                        <span className="opblock-external-docs__description">
+                          <Markdown source={ externalDocs.description } />
+                        </span>
+                      }
+                      <Link target="_blank" className="opblock-external-docs__link" href={sanitizeUrl(externalDocsUrl)}>{externalDocsUrl}</Link>
+                    </div>
                   </div> : null
-              }
+                }
 
-              { !tryItOutEnabled || !allowTryItOut || validationErrors.length <= 0 ? null : <div className="validation-errors errors-wrapper">
-                  Please correct the following validation errors and try again.
-                  <ul>
-                    { validationErrors.map((error, index) => <li key={index}> { error } </li>) }
-                  </ul>
-                </div>
-              }
+                { !operation || !operation.size ? null :
+                  <Parameters
+                    parameters={parameters}
+                    specPath={specPath.push("parameters")}
+                    operation={operation}
+                    onChangeKey={onChangeKey}
+                    onTryoutClick = { onTryoutClick }
+                    onResetClick = { onResetClick }
+                    onCancelClick = { onCancelClick }
+                    tryItOutEnabled = { tryItOutEnabled }
+                    allowTryItOut={allowTryItOut}
 
-            <div className={(!tryItOutEnabled || !response || !allowTryItOut) ? "execute-wrapper" : "btn-group"}>
-              { !tryItOutEnabled || !allowTryItOut ? null :
-
-                  <Execute
-                    operation={ operation }
-                    specActions={ specActions }
-                    specSelectors={ specSelectors }
-                    oas3Selectors={ oas3Selectors }
-                    oas3Actions={ oas3Actions }
-                    path={ path }
-                    method={ method }
-                    onExecute={ onExecute }
-                    disabled={executeInProgress}/>
-              }
-
-              { (!tryItOutEnabled || !response || !allowTryItOut) ? null :
-                  <Clear
-                    specActions={ specActions }
-                    path={ path }
-                    method={ method }/>
-              }
-            </div>
-
-            {executeInProgress ? <div className="loading-container"><div className="loading"></div></div> : null}
-
-              { !responses ? null :
-                  <Responses
-                    responses={ responses }
-                    request={ request }
-                    tryItOutResponse={ response }
+                    fn={fn}
                     getComponent={ getComponent }
-                    getConfigs={ getConfigs }
-                    specSelectors={ specSelectors }
-                    oas3Actions={oas3Actions}
-                    oas3Selectors={oas3Selectors}
                     specActions={ specActions }
-                    produces={specSelectors.producesOptionsFor([path, method]) }
-                    producesValue={ specSelectors.currentProducesFor([path, method]) }
-                    specPath={specPath.push("responses")}
-                    path={ path }
-                    method={ method }
-                    displayRequestDuration={ displayRequestDuration }
-                    fn={fn} />
-              }
+                    specSelectors={ specSelectors }
+                    pathMethod={ [path, method] }
+                    getConfigs={ getConfigs }
+                    oas3Actions={ oas3Actions }
+                    oas3Selectors={ oas3Selectors }
+                  />
+                }
 
-              { !showExtensions || !extensions.size ? null :
-                <OperationExt extensions={ extensions } getComponent={ getComponent } />
-              }
+                { !responses ? null :
+                    <Responses
+                      responses={ responses }
+                      request={ request }
+                      tryItOutResponse={ response }
+                      getComponent={ getComponent }
+                      getConfigs={ getConfigs }
+                      specSelectors={ specSelectors }
+                      oas3Actions={oas3Actions}
+                      oas3Selectors={oas3Selectors}
+                      specActions={ specActions }
+                      produces={specSelectors.producesOptionsFor([path, method]) }
+                      producesValue={ specSelectors.currentProducesFor([path, method]) }
+                      specPath={specPath.push("responses")}
+                      path={ path }
+                      method={ method }
+                      displayRequestDuration={ displayRequestDuration }
+                      fn={fn} />
+                }
+
+                { !showExtensions || !extensions.size ? null :
+                  <OperationExt extensions={ extensions } getComponent={ getComponent } />
+                }
+              </div>
+
+              {/* Right Column: Examples and Try It Out */}
+              <div className="opblock-examples-column">
+                { !tryItOutEnabled ? null :
+                  <OperationServers
+                    getComponent={getComponent}
+                    path={path}
+                    method={method}
+                    operationServers={operation.get("servers")}
+                    pathServers={specSelectors.paths().getIn([path, "servers"])}
+                    getSelectedServer={oas3Selectors.selectedServer}
+                    setSelectedServer={oas3Actions.setSelectedServer}
+                    setServerVariableValue={oas3Actions.setServerVariableValue}
+                    getServerVariable={oas3Selectors.serverVariableValue}
+                    getEffectiveServerValue={oas3Selectors.serverEffectiveValue}
+                  />
+                }
+
+                {!tryItOutEnabled || !allowTryItOut ? null : schemes && schemes.size ? <div className="opblock-schemes">
+                      <Schemes schemes={ schemes }
+                               path={ path }
+                               method={ method }
+                               specActions={ specActions }
+                               currentScheme={ operationScheme } />
+                    </div> : null
+                }
+
+                { !tryItOutEnabled || !allowTryItOut || validationErrors.length <= 0 ? null : <div className="validation-errors errors-wrapper">
+                    Please correct the following validation errors and try again.
+                    <ul>
+                      { validationErrors.map((error, index) => <li key={index}> { error } </li>) }
+                    </ul>
+                  </div>
+                }
+
+              <div className={(!tryItOutEnabled || !response || !allowTryItOut) ? "execute-wrapper" : "btn-group"}>
+                { !tryItOutEnabled || !allowTryItOut ? null :
+
+                    <Execute
+                      operation={ operation }
+                      specActions={ specActions }
+                      specSelectors={ specSelectors }
+                      oas3Selectors={ oas3Selectors }
+                      oas3Actions={ oas3Actions }
+                      path={ path }
+                      method={ method }
+                      onExecute={ onExecute }
+                      disabled={executeInProgress}/>
+                }
+
+                { (!tryItOutEnabled || !response || !allowTryItOut) ? null :
+                    <Clear
+                      specActions={ specActions }
+                      path={ path }
+                      method={ method }/>
+                }
+              </div>
+
+              {executeInProgress ? <div className="loading-container"><div className="loading"></div></div> : null}
+              </div>
             </div>
           </Collapse>
         </div>
